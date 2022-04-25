@@ -194,23 +194,27 @@
                 ]
             });
                     });
-            
-            L.geoJSON(wetlandtrees, {
-                style: function (feature) {
+
+
+                var wetlandtrees = L.geoJSON(null, {
+                    style: function (feature) {
                     return feature.properties && feature.properties.style;
                 },
-
-                pointToLayer: function (feature, latlng) {
-                return L.circleMarker(latlng, {
+                    pointToLayer: function (feature, latlng) {
+                        return L.circleMarker(latlng, {
                     radius: 8,
                     fillColor: "#ff7800",
                     color: "#000",
                     weight: 1,
                     opacity: 1,
                     fillOpacity: 0.8
+                })}}).addTo(map);
+                
+                $.getJSON("./wetlandtrees_4326.geojson", function (data) {
+                    // Do NOT create the GeoJSON layer here.
+                    // Create it outside and then fill the data
+                    wetlandtrees.addData(data);
                 });
-            }
-            }).addTo(map);
 
             var baseMaps = {
             Mapbox: baseLayer0,
@@ -221,7 +225,7 @@
 
             var overlayMaps = {
             "NTAs": nycLayer,
-            // "Flood Points": wetlandtrees
+             "Flood Points": wetlandtrees
             };
 
             var lC = L.control.layers(baseMaps, overlayMaps).addTo(map).expand();
