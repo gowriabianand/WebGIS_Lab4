@@ -150,6 +150,18 @@
             let baseLayer2 = L.tileLayer.provider("OpenStreetMap");
             let baseLayer3 = L.tileLayer.provider("Esri.WorldImagery");
 
+            var treeIcon = L.Icon.extend({
+            options: {
+            iconUrl: "tree.png",
+            iconAnchor: [16, 16], // point of the icon which will correspond to marker's location
+            popupAnchor: [3, 3], // point from which the popup should open relative to the iconAnchor
+            },
+        });
+
+            var smalltreeIcon = new treeIcon({
+            iconSize: [16, 16], // size of the icon
+        });
+
             var overNTAName = '';
             function onEachFeature(feature, layer) {
                 var popupContent = "<p> Borough: " + feature.properties.boroname +
@@ -201,16 +213,9 @@
                     return feature.properties && feature.properties.style;
                 },
                     pointToLayer: function (feature, latlng) {
-                        return L.circleMarker(latlng, {
-                    radius: 8,
-                    fillColor: "#ff7800",
-                    color: "#000",
-                    weight: 1,
-                    opacity: 1,
-                    fillOpacity: 0.8
-                })}}).addTo(map);
+                        return L.marker(latlng, { icon: smalltreeIcon})}}).addTo(map);
                 
-                $.getJSON("./wetlandtrees_4326.geojson", function (data) {
+                $.getJSON("./treesdbh50_4326.geojson", function (data) {
                     // Do NOT create the GeoJSON layer here.
                     // Create it outside and then fill the data
                     wetlandtrees.addData(data);
@@ -225,7 +230,7 @@
 
             var overlayMaps = {
             "NTAs": nycLayer,
-             "Flood Points": wetlandtrees
+            "Flood Points": wetlandtrees
             };
 
             var lC = L.control.layers(baseMaps, overlayMaps).addTo(map).expand();
